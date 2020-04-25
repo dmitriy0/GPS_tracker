@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gps_tracker">
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -10,8 +12,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBiJFN3f0hlR3oqzXYCpFHp16z-AVtDNFQ"/>
-        <activity android:name=".SignUpActivity"></activity>
+        <activity android:name=".EditProfile"></activity>
+        <activity android:name=".FriendRequest" />
+        <activity android:name=".AddFriend" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDkG8KYM2bpFcG3Fqd5giyLTWTJDdrf_wo" />
+
+        <activity android:name=".SignUpActivity" />
         <activity android:name=".MainActivity" />
         <activity
             android:name=".SignInActivity"

@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "929868526182",
-    "firebase_url": "https://gps-tracker-ddcc8.firebaseio.com",
-    "project_id": "gps-tracker-ddcc8",
-    "storage_bucket": "gps-tracker-ddcc8.appspot.com"
+    "project_number": "83535868246",
+    "firebase_url": "https://gps-tracker-275108.firebaseio.com",
+    "project_id": "gps-tracker-275108",
+    "storage_bucket": "gps-tracker-275108.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:929868526182:android:2cf10e5872103a94b7b3a7",
+        "mobilesdk_app_id": "1:83535868246:android:ceeca57fcdb29dd01fa6f7",
         "android_client_info": {
           "package_name": "com.example.gps_tracker"
         }
       },
       "oauth_client": [
         {
-          "client_id": "929868526182-gb8ffn7kb98mi0gd1t67crhdgktktalr.apps.googleusercontent.com",
+          "client_id": "83535868246-1qjp5rv4fsin3u7qfoo3odpkjchm17sd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.gps_tracker",
@@ -23,20 +23,20 @@
           }
         },
         {
-          "client_id": "929868526182-d0nafci9jr0qj6roj75e9jnrmuaeb26v.apps.googleusercontent.com",
+          "client_id": "83535868246-g9ogrm77fdb3775m9qpuep6e2o6msmhg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBiJFN3f0hlR3oqzXYCpFHp16z-AVtDNFQ"
+          "current_key": "AIzaSyDkG8KYM2bpFcG3Fqd5giyLTWTJDdrf_wo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "929868526182-d0nafci9jr0qj6roj75e9jnrmuaeb26v.apps.googleusercontent.com",
+              "client_id": "83535868246-g9ogrm77fdb3775m9qpuep6e2o6msmhg.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

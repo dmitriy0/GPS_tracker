@@ -7,6 +7,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -26,17 +27,24 @@ import org.w3c.dom.Text;
 
 import java.util.Objects;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 public class SignInActivity extends AppCompatActivity {
     String mLogin;
     String mPassword;
     private FirebaseAuth mAuth;
     FirebaseUser mUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private SharedPreferences mSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mSettings = getDefaultSharedPreferences(this);
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         if (user != null) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -72,32 +80,21 @@ public class SignInActivity extends AppCompatActivity {
 
 
 
-
-
-
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void singInUser(){
         mAuth = FirebaseAuth.getInstance();
 
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user != null){
-                    // sing in
 
-                }
-                else {
-                    // sing out
-                }
-            }
-        };
         mAuth.signInWithEmailAndPassword(mLogin, mPassword).addOnCompleteListener(Objects.requireNonNull(SignInActivity.this), new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
                     Toast.makeText(SignInActivity.this, "Авторизация успешна", Toast.LENGTH_LONG).show();
+
+                    SharedPreferences.Editor editor = mSettings.edit();
+                    editor.putString("email",mLogin.replace(".","").toLowerCase());
+                    editor.apply();
+
                     Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
