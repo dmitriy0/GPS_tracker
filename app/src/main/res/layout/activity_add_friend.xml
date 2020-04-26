@@ -1,32 +1,39 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
     tools:context=".AddFriend">
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:text="Введите e-mail человека которого хотите добавить в друзья" />
 
     <EditText
         android:id="@+id/friendEmail"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="205dp"
+        android:layout_width="270dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/input_primary"
         android:ems="10"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:hint="Почта"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addFriend" />
+        android:textColor="#000"
+        android:textAlignment="center" />
 
     <Button
         android:id="@+id/addFriend"
-        android:layout_width="wrap_content"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="53dp"
-        android:layout_marginTop="237dp"
-        android:layout_marginBottom="86dp"
-        android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/friendEmail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button_gradient"
+        android:text="Отправить запрос" />
+
+</LinearLayout>

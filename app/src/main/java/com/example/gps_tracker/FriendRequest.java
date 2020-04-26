@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -74,6 +75,7 @@ public class FriendRequest extends AppCompatActivity {
                                 }
                             }
                             if (!isRequestInFriends){
+
                                 friendsRequestsForRecyclerViews.add(new FriendsRequestsForRecyclerView(friendEmail,getApplicationContext(),FriendRequest.this));
                                 // создаем адаптер
                                 DataAdapterRequests adapter = new DataAdapterRequests(FriendRequest.this, friendsRequestsForRecyclerViews);
@@ -105,5 +107,11 @@ public class FriendRequest extends AppCompatActivity {
 
 
 
+    }
+    @Override
+    public void onBackPressed() {
+        // super.onBackPressed();
+        Intent intent = new Intent(FriendRequest.this, MainActivity.class);
+        startActivity(intent);
     }
 }

@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+import static androidx.core.content.ContextCompat.getMainExecutor;
 import static androidx.core.content.ContextCompat.startActivity;
 
 class DataAdapterRequests extends RecyclerView.Adapter<DataAdapterRequests.ViewHolder> {
@@ -83,6 +84,18 @@ class DataAdapterRequests extends RecyclerView.Adapter<DataAdapterRequests.ViewH
                                 count = dataSnapshot.child(email).child("friends").child("count").getValue(Integer.class);
                                 myRef.child(email).child("friends").child(String.valueOf(count)).setValue(holder.emailView.getText()+"");
                                 myRef.child(email).child("friends").child("count").setValue(count+1);
+
+                                int countRequests = dataSnapshot.child(email).child("requests").child("count").getValue(Integer.class);
+                                myRef.child(email).child("requests").child(String.valueOf(position)).removeValue();
+                                for (int j = position+1; j < countRequests;j++) {
+                                    String b = dataSnapshot.child(email).child("requests").child(String.valueOf(j)).getValue(String.class);
+                                    myRef.child(email).child("requests").child(String.valueOf(j-1)).setValue(b);
+
+                                }
+                                myRef.child(email).child("requests").child(String.valueOf(countRequests-1)).removeValue();
+                                myRef.child(email).child("requests").child("count").setValue(countRequests-1);
+
+
 
 
 

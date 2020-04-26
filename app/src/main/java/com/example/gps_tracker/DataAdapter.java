@@ -55,7 +55,7 @@ class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
             @Override
             public void onSuccess(Uri uri) {
 
-                Picasso.get().load(uri).into(holder.imageView);
+                Picasso.get().load(uri).transform(new CircleTransform()).into(holder.imageView);
             }
         });
 

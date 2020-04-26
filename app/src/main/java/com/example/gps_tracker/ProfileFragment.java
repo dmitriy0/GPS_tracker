@@ -82,7 +82,7 @@ public class ProfileFragment extends Fragment {
                 riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Picasso.get().load(uri).into(avatar);
+                        Picasso.get().load(uri).transform(new CircleTransform()).into(avatar);
                     }
                 });
 

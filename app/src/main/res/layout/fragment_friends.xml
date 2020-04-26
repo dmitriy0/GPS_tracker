@@ -3,27 +3,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="#fff"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
 
         <Button
             android:id="@+id/confirm"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="принять запросы" />
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_gradient"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:text="Принять запросы" />
 
         <Button
             android:id="@+id/addFriend"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="добавить друзей" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/button_gradient"
+            android:text="Добавить друзей" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:textColor="#000"
+        android:textSize="24sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        android:text="Друзья:" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"

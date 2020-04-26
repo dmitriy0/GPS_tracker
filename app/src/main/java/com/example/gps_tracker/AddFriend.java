@@ -146,4 +146,10 @@ public class AddFriend extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onBackPressed() {
+        // super.onBackPressed();
+        Intent intent = new Intent(AddFriend.this, MainActivity.class);
+        startActivity(intent);
+    }
 }

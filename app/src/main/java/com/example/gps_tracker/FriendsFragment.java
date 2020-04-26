@@ -60,7 +60,7 @@ public class FriendsFragment extends Fragment {
         final RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
 
-        Button addFriend = (Button) rootView.findViewById(R.id.addFriend); // кнопка
+        final Button addFriend = (Button) rootView.findViewById(R.id.addFriend); // кнопка
         addFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,7 +71,7 @@ public class FriendsFragment extends Fragment {
             }
         });
 
-        Button confirm = (Button) rootView.findViewById(R.id.confirm); // кнопка
+        final Button confirm = (Button) rootView.findViewById(R.id.confirm); // кнопка
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +98,8 @@ public class FriendsFragment extends Fragment {
                     try {
                         //Добавление друга
                         count = dataSnapshot.child(email).child("friends").child("count").getValue(Integer.class);
+                        int countRequests = dataSnapshot.child(email).child("requests").child("count").getValue(Integer.class);
+                        confirm.setText("Принять запросы ("+countRequests+")");
                         for (int i = 0; i < count; i++) {
 
                             friendEmail = dataSnapshot.child(email).child("friends").child(String.valueOf(i)).getValue(String.class);
@@ -109,7 +111,7 @@ public class FriendsFragment extends Fragment {
                             friendLongitude = dataSnapshot.child(friendEmail).child("currentLocation").child("longitude").getValue(Double.class);
                             friendLatitude = dataSnapshot.child(friendEmail).child("currentLocation").child("latitude").getValue(Double.class);
 
-                            friends.add(new FriendsForRecyclerView(friendEmail, friendName, imagePath));
+                            friends.add(new FriendsForRecyclerView(friendName, friendEmail, imagePath));
 
                         }
                         // создаем адаптер
@@ -135,5 +137,6 @@ public class FriendsFragment extends Fragment {
 
         return rootView;
     }
+
 
 }
