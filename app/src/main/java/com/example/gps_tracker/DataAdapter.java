@@ -2,14 +2,22 @@ package com.example.gps_tracker;
 
 import android.content.Context;
 
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -17,6 +25,8 @@ class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
     private LayoutInflater inflater;
     private List<FriendsForRecyclerView> friendsForRecyclerViews;
+
+    private StorageReference mStorageRef;
 
     DataAdapter(Context context, List<FriendsForRecyclerView> friendsForRecyclerViews) {
         this.friendsForRecyclerViews = friendsForRecyclerViews;
@@ -31,11 +41,26 @@ class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(DataAdapter.ViewHolder holder, int position) {
-        FriendsForRecyclerView friendsForRecyclerView = friendsForRecyclerViews.get(position);
-        holder.imageView.setImageResource(friendsForRecyclerView.getImage());
+    public void onBindViewHolder(final DataAdapter.ViewHolder holder, int position) {
+        final FriendsForRecyclerView friendsForRecyclerView = friendsForRecyclerViews.get(position);
+
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+
+        holder.emailView.setText(friendsForRecyclerView.getEmail());
         holder.nameView.setText(friendsForRecyclerView.getName());
-        holder.companyView.setText(friendsForRecyclerView.getCompany());
+
+        StorageReference riversRef = mStorageRef.child(friendsForRecyclerView.getPhoto());
+
+        riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+
+                Picasso.get().load(uri).into(holder.imageView);
+            }
+        });
+
+
+
     }
 
     @Override
@@ -45,12 +70,12 @@ class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
         final ImageView imageView;
-        final TextView nameView, companyView;
+        final TextView emailView, nameView;
         ViewHolder(View view){
             super(view);
             imageView = (ImageView)view.findViewById(R.id.image);
+            emailView = (TextView) view.findViewById(R.id.email);
             nameView = (TextView) view.findViewById(R.id.name);
-            companyView = (TextView) view.findViewById(R.id.company);
         }
     }
 }

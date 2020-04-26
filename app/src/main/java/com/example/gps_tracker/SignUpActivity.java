@@ -28,6 +28,7 @@ public class SignUpActivity extends AppCompatActivity {
     String mLogin;
     String mPassword;
     String mRepeatPassword;
+    String mNickname;
 
     private FirebaseAuth mAuth;
     FirebaseUser mUser;
@@ -46,14 +47,24 @@ public class SignUpActivity extends AppCompatActivity {
 
         mSettings = getDefaultSharedPreferences(this);
 
+        TextView enter = (TextView) findViewById(R.id.enter);
+        enter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+                startActivity(intent);
+            }
+        });
+
         Button singUp = (Button) findViewById(R.id.signUp); // кнопка регистрации
         singUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mLogin = ((EditText) findViewById(R.id.login)).getText().toString();
                 mPassword = ((EditText) findViewById(R.id.password)).getText().toString();
+                mNickname = ((EditText) findViewById(R.id.nickName)).getText().toString();
                 mRepeatPassword = ((EditText) findViewById(R.id.repeatPassword)).getText().toString();
-                if("".equals(mLogin) || "".equals(mPassword) ) {
+                if("".equals(mLogin) || "".equals(mPassword) || "".equals(mNickname) || "".equals(mRepeatPassword)) {
                     Toast.makeText(SignUpActivity.this, "Одно из полей не заполненно. Пожалуйста, заполните все поля и повторите отправку", Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -77,10 +88,12 @@ public class SignUpActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Toast.makeText(SignUpActivity.this, "Регистрация успешна", Toast.LENGTH_LONG).show();
 
-                    myRef.child(mLogin.replace(".","").toLowerCase()).child("name").setValue("amid");
+                    myRef.child(mLogin.replace(".","").toLowerCase()).child("name").setValue(mNickname);
                     myRef.child(mLogin.replace(".","").toLowerCase()).child("currentLocation").setValue("loc");
                     myRef.child(mLogin.replace(".","").toLowerCase()).child("requests").child("count").setValue(0);
                     myRef.child(mLogin.replace(".","").toLowerCase()).child("friends").child("count").setValue(0);
+                    String defaultImage = "gs://gps-tracker-275108.appspot.com"+"default";
+                    myRef.child(mLogin.replace(".","").toLowerCase()).child("photo").setValue(defaultImage);
 
 
                     SharedPreferences.Editor editor = mSettings.edit();

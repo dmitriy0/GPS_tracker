@@ -62,7 +62,6 @@ class DataAdapterRequests extends RecyclerView.Adapter<DataAdapterRequests.ViewH
         counterFor = 1;
 
         holder.emailView.setText(friendsRequestsForRecyclerView.getEmail());
-        holder.confirm.setText(friendsRequestsForRecyclerView.getConfirm());
 
         holder.confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,11 +116,12 @@ class DataAdapterRequests extends RecyclerView.Adapter<DataAdapterRequests.ViewH
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView emailView, confirm;
+        final TextView emailView;
+        final ImageView confirm;
         ViewHolder(View view){
             super(view);
             emailView = (TextView) view.findViewById(R.id.email);
-            confirm = (TextView) view.findViewById(R.id.confirm);
+            confirm = (ImageView) view.findViewById(R.id.confirm);
         }
     }
 }

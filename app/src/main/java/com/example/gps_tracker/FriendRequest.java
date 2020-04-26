@@ -74,7 +74,7 @@ public class FriendRequest extends AppCompatActivity {
                                 }
                             }
                             if (!isRequestInFriends){
-                                friendsRequestsForRecyclerViews.add(new FriendsRequestsForRecyclerView(friendEmail,"добавить",getApplicationContext(),FriendRequest.this));
+                                friendsRequestsForRecyclerViews.add(new FriendsRequestsForRecyclerView(friendEmail,getApplicationContext(),FriendRequest.this));
                                 // создаем адаптер
                                 DataAdapterRequests adapter = new DataAdapterRequests(FriendRequest.this, friendsRequestsForRecyclerViews);
                                 // устанавливаем для списка адаптер

@@ -1,16 +1,18 @@
 package com.example.gps_tracker;
 
+import android.net.Uri;
+
 public class FriendsForRecyclerView {
 
     private String name;
-    private String company;
-    private int image;
+    private String email;
+    private String photo;
 
-    public FriendsForRecyclerView(String name, String company, int image){
+    public FriendsForRecyclerView(String name, String email, String photo){
 
         this.name=name;
-        this.company = company;
-        this.image = image;
+        this.email = email;
+        this.photo = photo;
     }
 
     public String getName() {
@@ -21,19 +23,20 @@ public class FriendsForRecyclerView {
         this.name = name;
     }
 
-    String getCompany() {
-        return this.company;
+    String getEmail() {
+        return this.email;
     }
 
-    public void setCompany(String company) {
-        this.company = company;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    int getImage() {
-        return this.image;
+
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setImage(int image) {
-        this.image = image;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 }
