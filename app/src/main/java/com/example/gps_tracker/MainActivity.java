@@ -63,12 +63,21 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new MapFragment();
                 fragmentManager = MainActivity.this.getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
-            }else{
-                navigation.getMenu().getItem(2).setChecked(true);
-                FragmentManager fragmentManager;
-                fragment = new ProfileFragment();
-                fragmentManager = MainActivity.this.getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
+            }
+            else{
+                if (options.equals("friends")){
+                    navigation.getMenu().getItem(0).setChecked(true);
+                    FragmentManager fragmentManager;
+                    fragment = new FriendsFragment();
+                    fragmentManager = MainActivity.this.getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
+                }else{
+                    navigation.getMenu().getItem(2).setChecked(true);
+                    FragmentManager fragmentManager;
+                    fragment = new ProfileFragment();
+                    fragmentManager = MainActivity.this.getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
+                }
             }
 
         }

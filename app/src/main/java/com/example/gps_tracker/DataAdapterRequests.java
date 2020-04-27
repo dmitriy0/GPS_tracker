@@ -104,6 +104,7 @@ class DataAdapterRequests extends RecyclerView.Adapter<DataAdapterRequests.ViewH
 
                             }
                             counterFor = 0;
+
                         }
 
 

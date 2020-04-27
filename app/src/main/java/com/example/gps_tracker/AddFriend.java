@@ -75,9 +75,9 @@ public class AddFriend extends AppCompatActivity {
                                         String mFriendEmail = dataSnapshot.child(email).child("friends").child(i + "").getValue(String.class);
                                         if (friendEmail.equals(mFriendEmail)){
                                             Toast.makeText(getApplicationContext(),"данный пользователь у вас в друзьях",Toast.LENGTH_LONG).show();
-                                            permission = false;
                                             Intent intent = new Intent(AddFriend.this, AddFriend.class);
                                             startActivity(intent);
+                                            permission = false;
                                         }
 
 
@@ -88,9 +88,12 @@ public class AddFriend extends AppCompatActivity {
                                             String requestEmail = dataSnapshot.child(email).child("requests").child(i + "").getValue(String.class);
                                             if (friendEmail.equals(requestEmail)){
                                                 Toast.makeText(getApplicationContext(),"данный пользователь уже отправил вам запрос дружбы",Toast.LENGTH_LONG).show();
-                                                permission = false;
+
                                                 Intent intent = new Intent(AddFriend.this, AddFriend.class);
+                                                intent.putExtra("options","friends");
                                                 startActivity(intent);
+
+                                                permission = false;
                                             }
 
 
@@ -102,9 +105,10 @@ public class AddFriend extends AppCompatActivity {
                                             String friendRequests = dataSnapshot.child(friendEmail).child("requests").child(i + "").getValue(String.class);
                                             if (email.equals(friendRequests)) {
                                                 Toast.makeText(getApplicationContext(), "вы уже отправили запрос дружбы ему", Toast.LENGTH_LONG).show();
-                                                permission = false;
+
                                                 Intent intent = new Intent(AddFriend.this, AddFriend.class);
                                                 startActivity(intent);
+                                                permission = false;
                                             }
 
 
@@ -116,6 +120,7 @@ public class AddFriend extends AppCompatActivity {
                                         count = dataSnapshot.child(friendEmail.replace(".","")).child("requests").child("count").getValue(Integer.class);
                                         myRef.child(friendEmail.replace(".","")).child("requests").child(String.valueOf(count)).setValue(email);
                                         myRef.child(friendEmail.replace(".","")).child("requests").child("count").setValue(count+1);
+                                        Toast.makeText(getApplicationContext(),"запрос отправлен",Toast.LENGTH_LONG).show();
                                     }
 
                                 }
