@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +41,19 @@ public class AddFriend extends AppCompatActivity {
         setContentView(R.layout.activity_add_friend);
 
         mSettings = getDefaultSharedPreferences(this);
+
+        //обработчик нажатия на стрелочку
+        final ImageView back = (ImageView) findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(AddFriend.this, MainActivity.class);
+                intent.putExtra("options","friends");
+                startActivity(intent);
+
+            }
+        });
 
         //Кнопка отправления запроса дружбы
         Button add = (Button) findViewById(R.id.addFriend);
