@@ -17,9 +17,12 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,7 +36,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 
-public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
+public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButtonClickListener, OnMapReadyCallback {
 
     Location myLocation;
     private FusedLocationProviderClient fusedLocationClient;
@@ -80,24 +83,27 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
     @Override
     public void onMapReady(final GoogleMap googleMap) {
 
-        // Add a marker in Sydney and move the camera
         if (permissionStatus == PackageManager.PERMISSION_GRANTED)
         {
-            googleMap.setOnMyLocationClickListener(this);
             googleMap.setOnMyLocationButtonClickListener(this);
             googleMap.setMyLocationEnabled(true);
             FusedLocationProviderClient userLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
             userLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    if (location == null){
-                        Toast.makeText(getContext(), "Пожалуйста, включите местоположение", Toast.LENGTH_LONG).show();
-                    }
-                    else {
+                    if (location != null){
                         myRef.child(email).child("currentLocation").child("longitude").setValue(location.getLongitude());
                         myRef.child(email).child("currentLocation").child("latitude").setValue(location.getLatitude());
 
+                        LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(myLocation)
+                                .zoom(10)
+                                .build();
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                        googleMap.animateCamera(cameraUpdate);
                     }
+
 
                 }
             });
@@ -142,11 +148,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
         }
 
     }
-    @Override
-    public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(getContext(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
-    }
-
     @Override
     public boolean onMyLocationButtonClick() {
         Toast.makeText(getContext(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();

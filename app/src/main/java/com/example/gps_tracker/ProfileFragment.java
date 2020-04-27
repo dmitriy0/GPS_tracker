@@ -108,6 +108,7 @@ public class ProfileFragment extends Fragment {
 
                     uploadFile(imagePath, selectedImage);
                 }
+                Toast.makeText(rootView.getContext(),"Изменения успешно сохранены",Toast.LENGTH_LONG).show();
             }
         });
 
