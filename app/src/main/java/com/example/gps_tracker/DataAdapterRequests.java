@@ -27,13 +27,17 @@ import static androidx.core.content.ContextCompat.startActivity;
 
 class DataAdapterRequests extends RecyclerView.Adapter<DataAdapterRequests.ViewHolder> {
 
+    //класс который нужен для recyclerView запросов
+
+    private LayoutInflater inflater;
+    private List<FriendsRequestsForRecyclerView> friendsRequestsForRecyclerViews;
+
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("Users");
 
     private SharedPreferences mSettings;
-    private LayoutInflater inflater;
-    private List<FriendsRequestsForRecyclerView> friendsRequestsForRecyclerViews;
+
     private String email;
     private int count;
     private int counterFor;
@@ -57,13 +61,14 @@ class DataAdapterRequests extends RecyclerView.Adapter<DataAdapterRequests.ViewH
 
         final FriendsRequestsForRecyclerView friendsRequestsForRecyclerView = friendsRequestsForRecyclerViews.get(position);
 
+        holder.emailView.setText(friendsRequestsForRecyclerView.getEmail());
 
         mSettings = getDefaultSharedPreferences(friendsRequestsForRecyclerView.getContext());
         email = mSettings.getString("email","");
+
         counterFor = 1;
 
-        holder.emailView.setText(friendsRequestsForRecyclerView.getEmail());
-
+        //принятие запроса от друга
         holder.confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,20 +100,11 @@ class DataAdapterRequests extends RecyclerView.Adapter<DataAdapterRequests.ViewH
                                 myRef.child(email).child("requests").child(String.valueOf(countRequests-1)).removeValue();
                                 myRef.child(email).child("requests").child("count").setValue(countRequests-1);
 
-
-
-
-
-
                             } catch (Exception e) {
 
                             }
                             counterFor = 0;
-
                         }
-
-
-
                     }
 
                     @Override

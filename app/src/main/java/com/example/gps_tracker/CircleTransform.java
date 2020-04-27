@@ -9,6 +9,9 @@ import android.graphics.Shader;
 import com.squareup.picasso.Transformation;
 
 public class CircleTransform implements Transformation {
+
+    //класс который трансформирует прямоугольное изображение в круглое
+
     @Override
     public Bitmap transform(Bitmap source) {
         int size = Math.min(source.getWidth(), source.getHeight());

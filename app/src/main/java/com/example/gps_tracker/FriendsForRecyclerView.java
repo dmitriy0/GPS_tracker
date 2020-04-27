@@ -5,6 +5,8 @@ import android.net.Uri;
 
 public class FriendsForRecyclerView {
 
+    //ещё один класс который нужен для recyclerView друзей
+
     private String name;
     private String email;
     private String photo;

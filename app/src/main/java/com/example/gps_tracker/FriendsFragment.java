@@ -30,37 +30,31 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class FriendsFragment extends Fragment {
 
-    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("Users");
 
-    private String email;
-    private int count;
-
-    private SharedPreferences preferences;
     private String friendEmail;
     private String friendName;
+    private String email;
+    private int count;
+    private int counterFor;
     private Double friendLongitude;
     private Double friendLatitude;
 
-    private Uri imageUri;
+    private SharedPreferences preferences;
+
     private StorageReference mStorageRef;
-
-    int counterFor;
-
 
     private List<FriendsForRecyclerView> friends = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, final Bundle savedInstanceState) {
-
         final View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
-
 
         final RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
-
-        final Button addFriend = (Button) rootView.findViewById(R.id.addFriend); // кнопка
+        //кнопка перехода в активити отправления запроса дружбы
+        final Button addFriend = (Button) rootView.findViewById(R.id.addFriend);
         addFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,7 +65,8 @@ public class FriendsFragment extends Fragment {
             }
         });
 
-        final Button confirm = (Button) rootView.findViewById(R.id.confirm); // кнопка
+        //кнопка перехода в активити принятия запроса дружбы
+        final Button confirm = (Button) rootView.findViewById(R.id.confirm);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,22 +83,21 @@ public class FriendsFragment extends Fragment {
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         counterFor = 1;
-
+        //получение из бд списка друзей
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 if (counterFor == 1) {
+
                     try {
-                        //Добавление друга
                         count = dataSnapshot.child(email).child("friends").child("count").getValue(Integer.class);
                         int countRequests = dataSnapshot.child(email).child("requests").child("count").getValue(Integer.class);
                         confirm.setText("Принять запросы ("+countRequests+")");
                         for (int i = 0; i < count; i++) {
 
                             friendEmail = dataSnapshot.child(email).child("friends").child(String.valueOf(i)).getValue(String.class);
-
 
                             final String imagePath = dataSnapshot.child(friendEmail).child("photo").getValue(String.class);
 
@@ -114,9 +108,7 @@ public class FriendsFragment extends Fragment {
                             friends.add(new FriendsForRecyclerView(friendName, friendEmail, imagePath,getActivity(),friendLongitude,friendLatitude));
 
                         }
-                        // создаем адаптер
                         DataAdapter adapter = new DataAdapter(getContext(), friends);
-                        // устанавливаем для списка адаптер
                         recyclerView.setAdapter(adapter);
 
 
@@ -125,8 +117,6 @@ public class FriendsFragment extends Fragment {
                     }
                     counterFor = 0;
                 }
-
-
             }
 
             @Override

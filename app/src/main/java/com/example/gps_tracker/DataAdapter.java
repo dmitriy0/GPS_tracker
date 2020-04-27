@@ -29,7 +29,7 @@ import java.util.List;
 import static androidx.core.content.ContextCompat.startActivity;
 
 class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
-
+    //класс который нужен для recyclerView друзей
     private LayoutInflater inflater;
     private List<FriendsForRecyclerView> friendsForRecyclerViews;
 
@@ -45,27 +45,28 @@ class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
         View view = inflater.inflate(R.layout.friend_list, parent, false);
         return new ViewHolder(view);
+
     }
 
     @Override
     public void onBindViewHolder(final DataAdapter.ViewHolder holder, int position) {
         final FriendsForRecyclerView friendsForRecyclerView = friendsForRecyclerViews.get(position);
 
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-
         holder.emailView.setText(friendsForRecyclerView.getEmail());
         holder.nameView.setText(friendsForRecyclerView.getName());
 
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         StorageReference riversRef = mStorageRef.child(friendsForRecyclerView.getPhoto());
 
+        //отрисовка аватарки друга
         riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-
                 Picasso.get().load(uri).transform(new CircleTransform()).into(holder.imageView);
             }
         });
 
+        //обработчик нажатия на друга
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

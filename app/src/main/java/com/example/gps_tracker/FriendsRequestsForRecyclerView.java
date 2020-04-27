@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 public class FriendsRequestsForRecyclerView {
-
+    //ещё один класс который нужен для recyclerView запросов
     private String email;
     private Context context;
     private Activity activity;

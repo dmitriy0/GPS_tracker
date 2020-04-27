@@ -22,16 +22,17 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class AddFriend extends AppCompatActivity {
 
-    String friendEmail;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("Users");
-    private SharedPreferences mSettings;
-    String email;
-    int count;
-    String name;
-    int counterFor;
 
+    String friendEmail;
+    String email;
+    String name;
+    int count;
+    int counterFor;
     boolean permission;
+
+    private SharedPreferences mSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,66 +41,76 @@ public class AddFriend extends AppCompatActivity {
 
         mSettings = getDefaultSharedPreferences(this);
 
-
-        Button add = (Button) findViewById(R.id.addFriend); // кнопка добавления друга
+        //Кнопка отправления запроса дружбы
+        Button add = (Button) findViewById(R.id.addFriend);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 friendEmail = ((EditText) findViewById(R.id.friendEmail)).getText().toString().toLowerCase().replace(".","");
-                counterFor = 1;
                 email = mSettings.getString("email","");
+                counterFor = 1;
+
                 if (email.equals(friendEmail)){
+
                     Toast.makeText(AddFriend.this,"это ваш email",Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(AddFriend.this, AddFriend.class);
                     startActivity(intent);
+
                 }
+
                 else{
+
                     permission = true;
                     myRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             // This method is called once with the initial value and again
                             // whenever data at this location is updated.
-                            if (counterFor == 1){
-                                name = dataSnapshot.child(friendEmail.replace(".","")).child("name").getValue(String.class);
 
+                            if (counterFor == 1){
+
+                                //получаю имя пользователя с заданной почтой, если имя = null то выводим toast
+                                name = dataSnapshot.child(friendEmail.replace(".","")).child("name").getValue(String.class);
                                 if (name == null){
+
                                     Toast.makeText(getApplicationContext(),"пользователя с такими данными не существует",Toast.LENGTH_LONG).show();
                                     Intent intent = new Intent(AddFriend.this, AddFriend.class);
                                     startActivity(intent);
+
                                 }
                                 else{
+                                    //проверяю не добавлен ли этот пользователь ко мне в друзья
                                     int countFriends = dataSnapshot.child(email).child("friends").child("count").getValue(Integer.class);
                                     for (int i = 0; i < countFriends;i++) {
+
                                         String mFriendEmail = dataSnapshot.child(email).child("friends").child(i + "").getValue(String.class);
                                         if (friendEmail.equals(mFriendEmail)){
+
                                             Toast.makeText(getApplicationContext(),"данный пользователь у вас в друзьях",Toast.LENGTH_LONG).show();
                                             Intent intent = new Intent(AddFriend.this, AddFriend.class);
                                             startActivity(intent);
                                             permission = false;
+
                                         }
-
-
                                     }
                                     if (permission){
+
+                                        //проверяю не отправил ли этот пользователь мне запрос дружбы
                                         int countMyRequests = dataSnapshot.child(email).child("requests").child("count").getValue(Integer.class);
                                         for (int i = 0; i < countMyRequests;i++) {
                                             String requestEmail = dataSnapshot.child(email).child("requests").child(i + "").getValue(String.class);
                                             if (friendEmail.equals(requestEmail)){
                                                 Toast.makeText(getApplicationContext(),"данный пользователь уже отправил вам запрос дружбы",Toast.LENGTH_LONG).show();
-
                                                 Intent intent = new Intent(AddFriend.this, AddFriend.class);
                                                 intent.putExtra("options","friends");
                                                 startActivity(intent);
-
                                                 permission = false;
                                             }
-
-
                                         }
                                     }
                                     if (permission) {
+                                        //проверяю не отправил ли я этому пользователю запрос дружбы
                                         int countFriendRequests = dataSnapshot.child(friendEmail).child("requests").child("count").getValue(Integer.class);
                                         for (int i = 0; i < countFriendRequests; i++) {
                                             String friendRequests = dataSnapshot.child(friendEmail).child("requests").child(i + "").getValue(String.class);
@@ -110,28 +121,22 @@ public class AddFriend extends AppCompatActivity {
                                                 startActivity(intent);
                                                 permission = false;
                                             }
-
-
                                         }
                                     }
 
-
+                                    //отправляю запрос дружбы
                                     if(permission){
+
                                         count = dataSnapshot.child(friendEmail.replace(".","")).child("requests").child("count").getValue(Integer.class);
                                         myRef.child(friendEmail.replace(".","")).child("requests").child(String.valueOf(count)).setValue(email);
                                         myRef.child(friendEmail.replace(".","")).child("requests").child("count").setValue(count+1);
                                         Toast.makeText(getApplicationContext(),"запрос отправлен",Toast.LENGTH_LONG).show();
-                                    }
 
+                                    }
                                 }
                                 counterFor = 0;
                             }
-
-
-
                         }
-
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                             // Failed to read value
@@ -142,15 +147,10 @@ public class AddFriend extends AppCompatActivity {
                     startActivity(intent);
                 }
 
-
-
-
-
-
-
             }
         });
     }
+    //обработчик нажатия кнопки назад
     @Override
     public void onBackPressed() {
         // super.onBackPressed();

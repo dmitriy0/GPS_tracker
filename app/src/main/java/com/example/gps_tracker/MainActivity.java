@@ -34,11 +34,13 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        //options нужны, чтобы понять какой фрагмент открывать, в зависимости от того, откуда мы приходим в MainActivity
         Intent intent = getIntent();
         String options = intent.getStringExtra("options");
         if (options == null){
             options = "";
         }
+
         Fragment fragment;
 
         //получаем разрешение на местоположение от пользователя
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
             int REQUEST_PERMISSION_ACCESS_FINE_LOCATION = 1;
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_PERMISSION_ACCESS_FINE_LOCATION);
+
+            //открываем профиль пользователя
             navigation.getMenu().getItem(2).setChecked(true);
             FragmentManager fragmentManager;
             fragment = new ProfileFragment();
@@ -56,34 +60,43 @@ public class MainActivity extends AppCompatActivity {
 
         checkLocationServiceEnabled();
 
+        //в зависимости от значения options открываем нужный фрагмент
         if(permissionStatus == PackageManager.PERMISSION_GRANTED){
+
             if (options.equals("map")){
+
                 navigation.getMenu().getItem(1).setChecked(true);
                 FragmentManager fragmentManager;
                 fragment = new MapFragment();
                 fragmentManager = MainActivity.this.getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
+
             }
             else{
+
                 if (options.equals("friends")){
+
                     navigation.getMenu().getItem(0).setChecked(true);
                     FragmentManager fragmentManager;
                     fragment = new FriendsFragment();
                     fragmentManager = MainActivity.this.getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
+
                 }else{
+
                     navigation.getMenu().getItem(2).setChecked(true);
                     FragmentManager fragmentManager;
                     fragment = new ProfileFragment();
                     fragmentManager = MainActivity.this.getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
+
                 }
             }
 
         }
 
     }
-
+    //функция отображения нижнего меню
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -111,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
+
+    //обработчик нажатия кнопки назад
     public void onBackPressed() {
         // super.onBackPressed();
         Intent i = new Intent(Intent.ACTION_MAIN);
@@ -118,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
     }
+
+    //функция для проверки включено ли местоположение
     private boolean checkLocationServiceEnabled() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         try {
@@ -127,9 +144,7 @@ public class MainActivity extends AppCompatActivity {
         return buildAlertMessageNoLocationService(geolocationEnabled);
     }
 
-    /**
-     *  Показываем диалог и переводим пользователя к настройкам геолокации
-     */
+    //функция открыти диалога для включения местоположения
     private boolean buildAlertMessageNoLocationService(boolean network_enabled) {
         String msg = !network_enabled ? "Чтобы продолжить, включите на устройстве геолокацию" : null;
 

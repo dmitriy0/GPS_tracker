@@ -30,11 +30,14 @@ import java.util.Objects;
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class SignInActivity extends AppCompatActivity {
+
     String mLogin;
     String mPassword;
+
     private FirebaseAuth mAuth;
     FirebaseUser mUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+
     private SharedPreferences mSettings;
 
     @Override
@@ -45,13 +48,17 @@ public class SignInActivity extends AppCompatActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        //если пользователь уже вошел ранее пропускаем его дальше
         if (user != null) {
+
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
 
         } else {
+
             setContentView(R.layout.activity_sign_in);
-            Button singIn = (Button) findViewById(R.id.signIn); // кнопка авторизации
+
+            Button singIn = (Button) findViewById(R.id.signIn); // кнопка входа
             singIn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -66,8 +73,8 @@ public class SignInActivity extends AppCompatActivity {
 
                 }
             });
-
-            TextView singUp = (TextView) findViewById(R.id.newAccount); // кнопка регистрации
+            //обработчик нажатия на текст "Зарегистрироваться"
+            TextView singUp = (TextView) findViewById(R.id.newAccount);
             singUp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -79,7 +86,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
-
+    //функция входа
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void singInUser(){
         mAuth = FirebaseAuth.getInstance();
@@ -104,6 +111,8 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
     }
+
+    //обработчик нажатия кнопки назад
     @Override
     public void onBackPressed() {
         // super.onBackPressed();

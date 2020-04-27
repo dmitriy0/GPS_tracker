@@ -40,16 +40,19 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButtonClickListener, OnMapReadyCallback {
 
-    Location myLocation;
-    private FusedLocationProviderClient fusedLocationClient;
+
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("Users");
     private SharedPreferences preferences;
+
+    private String email;
     private int permissionStatus;
     private int count;
-    private String email;
     private Double friendLat;
     private Double friendLng;
+
+    Location myLocation;
+    private FusedLocationProviderClient fusedLocationClient;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -57,9 +60,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
         preferences = getDefaultSharedPreferences(getContext());
-
-        preferences = getDefaultSharedPreferences(getContext());
         email = preferences.getString("email","");
+
+        //проверяем получено ли разрешение на местоположение от пользователя
         permissionStatus = checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionStatus == PackageManager.PERMISSION_GRANTED){
             SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
@@ -68,21 +71,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
             mapFragment.getMapAsync((OnMapReadyCallback) this);
         }
 
-
-
-
         return rootView;
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+    //функция для отображения карты
     @Override
     public void onMapReady(final GoogleMap googleMap) {
 
@@ -94,19 +86,22 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
         {
             googleMap.setOnMyLocationButtonClickListener(this);
             googleMap.setMyLocationEnabled(true);
+
             FusedLocationProviderClient userLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
             userLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
                     if (location != null){
+
                         myRef.child(email).child("currentLocation").child("longitude").setValue(location.getLongitude());
                         myRef.child(email).child("currentLocation").child("latitude").setValue(location.getLatitude());
 
+                        //анимация камеры к моему местоположению
                         if (friendLat == 0.0 && friendLng == 0.0) {
                             LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
                             CameraPosition cameraPosition = new CameraPosition.Builder()
                                     .target(myLocation)
-                                    .zoom(8)
+                                    .zoom(9)
                                     .build();
                             CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                             googleMap.animateCamera(cameraUpdate);
@@ -116,25 +111,26 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
 
                 }
             });
-
+            //анимация камеры к местоположению друга
             if (friendLat != 0.0 && friendLng != 0.0){
                 LatLng friendLocation = new LatLng(friendLat,friendLng);
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(friendLocation)
-                        .zoom(8)
+                        .zoom(9)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                 googleMap.animateCamera(cameraUpdate);
                 intent.removeExtra("lat");
                 intent.removeExtra("lng");
             }
+
+            //отображение местоположения друзей
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
                     try{
-                        //Добавление друга
                         count = dataSnapshot.child(email).child("friends").child("count").getValue(Integer.class);
                         for (int i = 0; i < count;i++) {
                             String friendEmail = dataSnapshot.child(email).child("friends").child(String.valueOf(i)).getValue(String.class);

@@ -43,18 +43,19 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class ProfileFragment extends Fragment {
 
     private String name;
+    private String email;
+    private Uri selectedImage;
+    private ImageView avatar;
+    private EditText editName;
+
+    private View rootView;
+
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef;
     private StorageReference mStorageRef;
     private SharedPreferences preferences;
-    private String email;
-    private View rootView;
 
-    private Uri selectedImage;
-    private ImageView avatar;
     private static final int GALLERY_REQUEST = 1;
-    private EditText editName;
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -62,13 +63,15 @@ public class ProfileFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
         myRef = database.getReference("Users");
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         preferences = getDefaultSharedPreferences(getContext());
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+
         email = preferences.getString("email","");
         avatar = (ImageView) rootView.findViewById(R.id.avatar);
         editName = ((EditText) rootView.findViewById(R.id.editName));
 
+        //отображение информации о пользователе
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -85,8 +88,6 @@ public class ProfileFragment extends Fragment {
                         Picasso.get().load(uri).transform(new CircleTransform()).into(avatar);
                     }
                 });
-
-
             }
 
             @Override
@@ -96,6 +97,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        //кнопка для сохранения изменений
         final Button save = rootView.findViewById(R.id.save);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +114,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        //открытие галереи по нажаттию на аватар
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,10 +124,10 @@ public class ProfileFragment extends Fragment {
 
             }
         });
-
-
         return rootView;
     }
+
+
     public void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
 
         super.onActivityResult(requestCode, resultCode, resultIntent);
@@ -134,7 +137,7 @@ public class ProfileFragment extends Fragment {
         if (resultCode == -1) {
 
             switch (requestCode) {
-
+                //меняем изображение в профиле на изображение, которое выбрали в галерее
                 case GALLERY_REQUEST:
                     selectedImage = resultIntent.getData();
                     SharedPreferences.Editor editor = preferences.edit();
@@ -147,6 +150,8 @@ public class ProfileFragment extends Fragment {
         }
 
     }
+
+    //загрузка файла на firebase
     private void uploadFile(String path, Uri pathOfFile) {
         //if there is a file to upload
         StorageReference riversRef = mStorageRef.child(path);

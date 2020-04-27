@@ -47,6 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         mSettings = getDefaultSharedPreferences(this);
 
+        //обработчик нажатия на текст "Войти"
         TextView enter = (TextView) findViewById(R.id.enter);
         enter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +80,8 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
+
+    //Функция регистрации
     private void addUser(){
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -108,6 +111,8 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
+
+    //обработчик нажатия кнопки назад
     @Override
     public void onBackPressed() {
         // super.onBackPressed();
