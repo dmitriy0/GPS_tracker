@@ -9,13 +9,18 @@ public class FriendsForRecyclerView {
     private String email;
     private String photo;
     private Activity activity;
+    private Double lng;
+    private Double lat;
 
-    public FriendsForRecyclerView(String name, String email, String photo,Activity activity){
+    public FriendsForRecyclerView(String name, String email, String photo,Activity activity,Double lng,Double lat){
 
         this.name=name;
         this.email = email;
         this.photo = photo;
         this.activity = activity;
+        this.lat = lat;
+        this.lng = lng;
+
     }
 
     public String getName() {
@@ -49,5 +54,21 @@ public class FriendsForRecyclerView {
 
     public void setActivity(Activity activity) {
         this.activity = activity;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLng() {
+        return lng;
+    }
+
+    public void setLng(Double lng) {
+        this.lng = lng;
     }
 }

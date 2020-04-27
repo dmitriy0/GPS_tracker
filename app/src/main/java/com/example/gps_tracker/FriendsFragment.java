@@ -111,7 +111,7 @@ public class FriendsFragment extends Fragment {
                             friendLongitude = dataSnapshot.child(friendEmail).child("currentLocation").child("longitude").getValue(Double.class);
                             friendLatitude = dataSnapshot.child(friendEmail).child("currentLocation").child("latitude").getValue(Double.class);
 
-                            friends.add(new FriendsForRecyclerView(friendName, friendEmail, imagePath,getActivity()));
+                            friends.add(new FriendsForRecyclerView(friendName, friendEmail, imagePath,getActivity(),friendLongitude,friendLatitude));
 
                         }
                         // создаем адаптер

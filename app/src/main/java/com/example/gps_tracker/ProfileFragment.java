@@ -140,7 +140,7 @@ public class ProfileFragment extends Fragment {
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("image", String.valueOf(selectedImage));
                     editor.apply();
-                    avatar.setImageURI(selectedImage);
+                    Picasso.get().load(selectedImage).transform(new CircleTransform()).into(avatar);
 
             }
 

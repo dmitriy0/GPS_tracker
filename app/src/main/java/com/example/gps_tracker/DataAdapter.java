@@ -66,6 +66,17 @@ class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
             }
         });
 
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(friendsForRecyclerView.getActivity(), MainActivity.class);
+                intent.putExtra("options","map");
+                intent.putExtra("lat",friendsForRecyclerView.getLat());
+                intent.putExtra("lng",friendsForRecyclerView.getLng());
+                startActivity(friendsForRecyclerView.getActivity(),intent,null);
+            }
+        });
+
 
 
     }

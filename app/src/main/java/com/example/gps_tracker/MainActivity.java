@@ -34,7 +34,11 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-
+        Intent intent = getIntent();
+        String options = intent.getStringExtra("options");
+        if (options == null){
+            options = "";
+        }
         Fragment fragment;
 
         //получаем разрешение на местоположение от пользователя
@@ -52,13 +56,21 @@ public class MainActivity extends AppCompatActivity {
 
         checkLocationServiceEnabled();
 
-
         if(permissionStatus == PackageManager.PERMISSION_GRANTED){
-            navigation.getMenu().getItem(2).setChecked(true);
-            FragmentManager fragmentManager;
-            fragment = new ProfileFragment();
-            fragmentManager = MainActivity.this.getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
+            if (options.equals("map")){
+                navigation.getMenu().getItem(1).setChecked(true);
+                FragmentManager fragmentManager;
+                fragment = new MapFragment();
+                fragmentManager = MainActivity.this.getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
+            }else{
+                navigation.getMenu().getItem(2).setChecked(true);
+                FragmentManager fragmentManager;
+                fragment = new ProfileFragment();
+                fragmentManager = MainActivity.this.getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
+            }
+
         }
 
     }

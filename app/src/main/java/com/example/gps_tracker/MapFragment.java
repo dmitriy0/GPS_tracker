@@ -32,6 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
@@ -46,7 +48,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
     private int permissionStatus;
     private int count;
     private String email;
-
+    private Double friendLat;
+    private Double friendLng;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -83,6 +86,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
     @Override
     public void onMapReady(final GoogleMap googleMap) {
 
+        Intent intent = requireActivity().getIntent();
+        friendLat = (Objects.requireNonNull(intent.getDoubleExtra("lat",0.0)));
+        friendLng = (Objects.requireNonNull(intent.getDoubleExtra("lng",0.0)));
+
         if (permissionStatus == PackageManager.PERMISSION_GRANTED)
         {
             googleMap.setOnMyLocationButtonClickListener(this);
@@ -95,18 +102,32 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
                         myRef.child(email).child("currentLocation").child("longitude").setValue(location.getLongitude());
                         myRef.child(email).child("currentLocation").child("latitude").setValue(location.getLatitude());
 
-                        LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                        CameraPosition cameraPosition = new CameraPosition.Builder()
-                                .target(myLocation)
-                                .zoom(10)
-                                .build();
-                        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                        googleMap.animateCamera(cameraUpdate);
+                        if (friendLat == 0.0 && friendLng == 0.0) {
+                            LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                            CameraPosition cameraPosition = new CameraPosition.Builder()
+                                    .target(myLocation)
+                                    .zoom(8)
+                                    .build();
+                            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                            googleMap.animateCamera(cameraUpdate);
+                        }
                     }
 
 
                 }
             });
+
+            if (friendLat != 0.0 && friendLng != 0.0){
+                LatLng friendLocation = new LatLng(friendLat,friendLng);
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(friendLocation)
+                        .zoom(8)
+                        .build();
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                googleMap.animateCamera(cameraUpdate);
+                intent.removeExtra("lat");
+                intent.removeExtra("lng");
+            }
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
