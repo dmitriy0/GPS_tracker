@@ -69,10 +69,10 @@ public class ChangePassword extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
                                                     Toast.makeText(getApplicationContext(),"пароль успешно изменен",Toast.LENGTH_LONG).show();
-                                                    Intent mStartActivity = new Intent(context, StartActivity.class);
+                                                    Intent mStartActivity = new Intent(getApplicationContext(), SignInActivity.class);
                                                     int mPendingIntentId = 123456;
-                                                    PendingIntent mPendingIntent = PendingIntent.getActivity(context, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                                                    AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+                                                    PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                                                    AlarmManager mgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
                                                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                                     System.exit(0);
                                                 } else {

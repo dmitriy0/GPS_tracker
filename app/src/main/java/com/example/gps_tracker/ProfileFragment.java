@@ -1,8 +1,10 @@
 package com.example.gps_tracker;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -25,6 +28,7 @@ import com.squareup.picasso.Picasso;
 
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 
 public class ProfileFragment extends Fragment {
@@ -48,13 +53,20 @@ public class ProfileFragment extends Fragment {
     private DatabaseReference myRef;
     private StorageReference mStorageRef;
     private SharedPreferences preferences;
-
+    private int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 2;
     private static final int GALLERY_REQUEST = 1;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        int permissionStatus = checkSelfPermission(getContext(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION_READ_EXTERNAL_STORAGE);
+
+        }
+
 
         myRef = database.getReference("Users");
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -80,6 +92,7 @@ public class ProfileFragment extends Fragment {
                 }
                 else{
                     String imagePath = dataSnapshot.child(email).child("photo").getValue(String.class);
+                    assert imagePath != null;
                     StorageReference riversRef = mStorageRef.child(imagePath);
                     riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
@@ -131,9 +144,10 @@ public class ProfileFragment extends Fragment {
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getActivity(), SignInActivity.class);
-                intent.putExtra("options",false);
                 startActivity(intent);
+
             }
         });
 
@@ -141,9 +155,17 @@ public class ProfileFragment extends Fragment {
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gallery = new Intent(Intent.ACTION_PICK);
-                gallery.setType("image/*");
-                startActivityForResult(gallery, GALLERY_REQUEST);
+
+                int permissionStatus = checkSelfPermission(getContext(),Manifest.permission.READ_EXTERNAL_STORAGE);
+                if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                    Intent gallery = new Intent(Intent.ACTION_PICK);
+                    gallery.setType("image/*");
+                    startActivityForResult(gallery, GALLERY_REQUEST);
+                }else{
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION_READ_EXTERNAL_STORAGE);
+
+                }
+
 
             }
         });

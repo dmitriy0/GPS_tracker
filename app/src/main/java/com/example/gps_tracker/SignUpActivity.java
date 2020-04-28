@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,7 +59,6 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
-                intent.putExtra("options",false);
                 startActivity(intent);
             }
         });
@@ -93,28 +93,42 @@ public class SignUpActivity extends AppCompatActivity {
         mUser = mAuth.getCurrentUser();
         isEmailExist = false;
 
+
+
         Task<AuthResult> authResultTask = mAuth.createUserWithEmailAndPassword(mLogin, mPassword).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    isEmailExist = true;
-                    myRef.child(mLogin.replace(".","").toLowerCase()).child("name").setValue(mNickname);
-                    myRef.child(mLogin.replace(".","").toLowerCase()).child("currentLocation").child("longitude").setValue(null);
-                    myRef.child(mLogin.replace(".","").toLowerCase()).child("currentLocation").child("latitude").setValue(null);
-                    myRef.child(mLogin.replace(".","").toLowerCase()).child("sendRequests").child("count").setValue(0);
-                    myRef.child(mLogin.replace(".","").toLowerCase()).child("receiveRequests").child("count").setValue(0);
-                    myRef.child(mLogin.replace(".","").toLowerCase()).child("friends").child("count").setValue(0);
-                    String defaultImage = "gs://gps-tracker-275108.appspot.com"+"default";
-                    myRef.child(mLogin.replace(".","").toLowerCase()).child("photo").setValue(defaultImage);
+
+                    mAuth = FirebaseAuth.getInstance();
+                    mUser = mAuth.getCurrentUser();
+
+                    mUser.sendEmailVerification()
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        // email sent
+
+                                        Toast.makeText(getBaseContext(),"на ваш email отправлено письмо для подтверждения регистрации",Toast.LENGTH_LONG).show();
+                                        SharedPreferences.Editor editor = mSettings.edit();
+                                        editor.putBoolean("first",true);
+                                        editor.putString("nick",mNickname);
+                                        editor.apply();
+                                        // after email is sent just logout the user and finish this activity
+                                        mAuth.signOut();
+                                        finish();
+                                    }
+                                    else
+                                    {
+                                        // email not sent, so display message and restart the activity or do whatever you wish to do
+
+                                        //restart this activity
 
 
-                    SharedPreferences.Editor editor = mSettings.edit();
-                    editor.putString("emailForBD",mLogin.replace(".","").toLowerCase());
-                    editor.putString("realEmail",mLogin);
-                    editor.apply();
-
-                    Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                    startActivity(intent);
+                                    }
+                                }
+                            });
 
                 }
 
@@ -124,6 +138,7 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     //обработчик нажатия кнопки назад

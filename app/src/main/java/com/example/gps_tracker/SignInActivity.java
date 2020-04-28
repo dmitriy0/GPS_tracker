@@ -22,6 +22,8 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
@@ -35,6 +37,8 @@ public class SignInActivity extends AppCompatActivity {
     String mPassword;
 
     private FirebaseAuth mAuth;
+
+    DatabaseReference myRef;
     FirebaseUser mUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
@@ -46,10 +50,12 @@ public class SignInActivity extends AppCompatActivity {
 
         mSettings = getDefaultSharedPreferences(this);
 
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Users");
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        boolean option = getIntent().getBooleanExtra("options",true);
         //если пользователь уже вошел ранее пропускаем его дальше
-        if (user != null && option) {
+        if (user != null) {
 
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -96,15 +102,35 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
-                    Toast.makeText(SignInActivity.this, "Авторизация успешна", Toast.LENGTH_LONG).show();
+                    if(Objects.requireNonNull(mAuth.getCurrentUser()).isEmailVerified()){
+                        Toast.makeText(SignInActivity.this, "Авторизация успешна", Toast.LENGTH_LONG).show();
 
-                    SharedPreferences.Editor editor = mSettings.edit();
-                    editor.putString("emailForBD",mLogin.replace(".","").toLowerCase());
-                    editor.putString("realEmail",mLogin);
-                    editor.apply();
 
-                    Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                    startActivity(intent);
+
+
+                        SharedPreferences.Editor editor = mSettings.edit();
+                        editor.putString("emailForBD",mLogin.replace(".","").toLowerCase());
+                        editor.putString("realEmail",mLogin);
+                        editor.apply();
+                        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                        startActivity(intent);
+
+
+
+
+
+
+
+                        //Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                        // startActivity(intent);
+
+
+                    }else{
+                        Toast.makeText(SignInActivity.this, "подтвердите свой email", Toast.LENGTH_LONG).show();
+
+                    }
+
+
                 }
                 else{
                     Toast.makeText(SignInActivity.this, "Авторизация провалена", Toast.LENGTH_LONG).show();

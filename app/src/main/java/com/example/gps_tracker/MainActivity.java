@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
@@ -11,6 +12,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -20,11 +23,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 public class MainActivity extends AppCompatActivity {
 
     private LocationManager locationManager;
     public static boolean geolocationEnabled = false;
     int REQUEST_PERMISSION_ACCESS_FINE_LOCATION = 1;
+    DatabaseReference myRef;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -34,6 +40,28 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Users");
+
+        SharedPreferences mSettings = getDefaultSharedPreferences(this);
+        boolean first = mSettings.getBoolean("first",false);
+        String mLogin = mSettings.getString("emailForBD","");
+        if (first){
+            myRef.child(mLogin.replace(".","").toLowerCase()).child("name").setValue(mSettings.getString("nick",""));
+            myRef.child(mLogin.replace(".","").toLowerCase()).child("currentLocation").child("longitude").setValue(null);
+            myRef.child(mLogin.replace(".","").toLowerCase()).child("currentLocation").child("latitude").setValue(null);
+            myRef.child(mLogin.replace(".","").toLowerCase()).child("sendRequests").child("count").setValue(0);
+            myRef.child(mLogin.replace(".","").toLowerCase()).child("receiveRequests").child("count").setValue(0);
+            myRef.child(mLogin.replace(".","").toLowerCase()).child("friends").child("count").setValue(0);
+            String defaultImage = "gs://gps-tracker-275108.appspot.com"+"default";
+            myRef.child(mLogin.replace(".","").toLowerCase()).child("photo").setValue(defaultImage);
+
+            SharedPreferences.Editor editor = mSettings.edit();
+            editor.putBoolean("first",false);
+            editor.apply();
+        }
+
 
         //options нужны, чтобы понять какой фрагмент открывать, в зависимости от того, откуда мы приходим в MainActivity
         Intent intent = getIntent();
@@ -47,14 +75,12 @@ public class MainActivity extends AppCompatActivity {
         //получаем разрешение на местоположение от пользователя
         int permissionStatus = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-
-
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_PERMISSION_ACCESS_FINE_LOCATION);
 
             //открываем профиль пользователя
-            navigation.getMenu().getItem(2).setChecked(true);
+            navigation.getMenu().getItem(0).setChecked(true);
             FragmentManager fragmentManager;
-            fragment = new ProfileFragment();
+            fragment = new FriendsFragment();
             fragmentManager = MainActivity.this.getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
         }
@@ -85,9 +111,9 @@ public class MainActivity extends AppCompatActivity {
 
                 }else{
 
-                    navigation.getMenu().getItem(2).setChecked(true);
+                    navigation.getMenu().getItem(0).setChecked(true);
                     FragmentManager fragmentManager;
-                    fragment = new ProfileFragment();
+                    fragment = new FriendsFragment();
                     fragmentManager = MainActivity.this.getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
 
