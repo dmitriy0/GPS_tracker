@@ -35,7 +35,7 @@ public class FriendRequest extends AppCompatActivity {
     String friendEmail;
     String email;
     int countFriends;
-    int countRequests;
+    int countReceiveRequests;
     int counterFor;
     boolean isRequestInFriends;
 
@@ -48,7 +48,7 @@ public class FriendRequest extends AppCompatActivity {
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         mSettings = getDefaultSharedPreferences(this);
-        email = mSettings.getString("email","");
+        email = mSettings.getString("emailForBD","");
 
         counterFor = 1;
 
@@ -76,11 +76,11 @@ public class FriendRequest extends AppCompatActivity {
                 if (counterFor == 1){
 
                     try{
-                        countRequests = dataSnapshot.child(email).child("requests").child("count").getValue(Integer.class);
+                        countReceiveRequests = dataSnapshot.child(email).child("receiveRequests").child("count").getValue(Integer.class);
 
-                        for (int i = 0; i < countRequests;i++) {
+                        for (int i = 0; i < countReceiveRequests;i++) {
 
-                            friendEmail = dataSnapshot.child(email).child("requests").child(i+"").getValue(String.class);
+                            friendEmail = dataSnapshot.child(email).child("receiveRequests").child(i+"").getValue(String.class);
                             isRequestInFriends = false;
                             countFriends = dataSnapshot.child(email).child("friends").child("count").getValue(Integer.class);
 

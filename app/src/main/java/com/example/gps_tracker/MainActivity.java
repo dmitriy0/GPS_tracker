@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     private LocationManager locationManager;
     public static boolean geolocationEnabled = false;
+    int REQUEST_PERMISSION_ACCESS_FINE_LOCATION = 1;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         //получаем разрешение на местоположение от пользователя
         int permissionStatus = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-            int REQUEST_PERMISSION_ACCESS_FINE_LOCATION = 1;
+
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_PERMISSION_ACCESS_FINE_LOCATION);
 
@@ -162,6 +163,25 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission granted
+
+                } else {
+                    Intent i = new Intent(Intent.ACTION_MAIN);
+                    i.addCategory(Intent.CATEGORY_HOME);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                    finish();
+                    android.os.Process.killProcess(android.os.Process.myPid());
+
+                }
+                return;
+        }
     }
 
 }

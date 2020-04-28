@@ -47,9 +47,9 @@ public class SignInActivity extends AppCompatActivity {
         mSettings = getDefaultSharedPreferences(this);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+        boolean option = getIntent().getBooleanExtra("options",true);
         //если пользователь уже вошел ранее пропускаем его дальше
-        if (user != null) {
+        if (user != null && option) {
 
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -99,7 +99,8 @@ public class SignInActivity extends AppCompatActivity {
                     Toast.makeText(SignInActivity.this, "Авторизация успешна", Toast.LENGTH_LONG).show();
 
                     SharedPreferences.Editor editor = mSettings.edit();
-                    editor.putString("email",mLogin.replace(".","").toLowerCase());
+                    editor.putString("emailForBD",mLogin.replace(".","").toLowerCase());
+                    editor.putString("realEmail",mLogin);
                     editor.apply();
 
                     Intent intent = new Intent(SignInActivity.this, MainActivity.class);

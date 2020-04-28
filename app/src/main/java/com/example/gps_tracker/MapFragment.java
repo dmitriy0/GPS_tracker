@@ -60,7 +60,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
         preferences = getDefaultSharedPreferences(getContext());
-        email = preferences.getString("email","");
+        email = preferences.getString("emailForBD","");
 
         //проверяем получено ли разрешение на местоположение от пользователя
         permissionStatus = checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION);

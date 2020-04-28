@@ -62,7 +62,7 @@ public class AddFriend extends AppCompatActivity {
             public void onClick(View v) {
 
                 friendEmail = ((EditText) findViewById(R.id.friendEmail)).getText().toString().toLowerCase().replace(".","");
-                email = mSettings.getString("email","");
+                email = mSettings.getString("emailForBD","");
                 counterFor = 1;
 
                 if (email.equals(friendEmail)){
@@ -111,9 +111,9 @@ public class AddFriend extends AppCompatActivity {
                                     if (permission){
 
                                         //проверяю не отправил ли этот пользователь мне запрос дружбы
-                                        int countMyRequests = dataSnapshot.child(email).child("requests").child("count").getValue(Integer.class);
+                                        int countMyRequests = dataSnapshot.child(email).child("receiveRequests").child("count").getValue(Integer.class);
                                         for (int i = 0; i < countMyRequests;i++) {
-                                            String requestEmail = dataSnapshot.child(email).child("requests").child(i + "").getValue(String.class);
+                                            String requestEmail = dataSnapshot.child(email).child("receiveRequests").child(i + "").getValue(String.class);
                                             if (friendEmail.equals(requestEmail)){
                                                 Toast.makeText(getApplicationContext(),"данный пользователь уже отправил вам запрос дружбы",Toast.LENGTH_LONG).show();
                                                 Intent intent = new Intent(AddFriend.this, AddFriend.class);
@@ -125,9 +125,9 @@ public class AddFriend extends AppCompatActivity {
                                     }
                                     if (permission) {
                                         //проверяю не отправил ли я этому пользователю запрос дружбы
-                                        int countFriendRequests = dataSnapshot.child(friendEmail).child("requests").child("count").getValue(Integer.class);
+                                        int countFriendRequests = dataSnapshot.child(friendEmail).child("receiveRequests").child("count").getValue(Integer.class);
                                         for (int i = 0; i < countFriendRequests; i++) {
-                                            String friendRequests = dataSnapshot.child(friendEmail).child("requests").child(i + "").getValue(String.class);
+                                            String friendRequests = dataSnapshot.child(friendEmail).child("receiveRequests").child(i + "").getValue(String.class);
                                             if (email.equals(friendRequests)) {
                                                 Toast.makeText(getApplicationContext(), "вы уже отправили запрос дружбы ему", Toast.LENGTH_LONG).show();
 
@@ -141,9 +141,14 @@ public class AddFriend extends AppCompatActivity {
                                     //отправляю запрос дружбы
                                     if(permission){
 
-                                        count = dataSnapshot.child(friendEmail.replace(".","")).child("requests").child("count").getValue(Integer.class);
-                                        myRef.child(friendEmail.replace(".","")).child("requests").child(String.valueOf(count)).setValue(email);
-                                        myRef.child(friendEmail.replace(".","")).child("requests").child("count").setValue(count+1);
+                                        count = dataSnapshot.child(friendEmail.replace(".","")).child("receiveRequests").child("count").getValue(Integer.class);
+                                        myRef.child(friendEmail.replace(".","")).child("receiveRequests").child(String.valueOf(count)).setValue(email);
+                                        myRef.child(friendEmail.replace(".","")).child("receiveRequests").child("count").setValue(count+1);
+
+                                        count = dataSnapshot.child(email.replace(".","")).child("sendRequests").child("count").getValue(Integer.class);
+                                        myRef.child(email.replace(".","")).child("sendRequests").child(String.valueOf(count)).setValue(friendEmail);
+                                        myRef.child(email.replace(".","")).child("sendRequests").child("count").setValue(count+1);
+
                                         Toast.makeText(getApplicationContext(),"запрос отправлен",Toast.LENGTH_LONG).show();
 
                                     }

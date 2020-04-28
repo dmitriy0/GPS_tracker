@@ -3,7 +3,6 @@ package com.example.gps_tracker;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,14 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -33,9 +30,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.io.File;
-import java.io.IOException;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -67,7 +61,7 @@ public class ProfileFragment extends Fragment {
 
         preferences = getDefaultSharedPreferences(getContext());
 
-        email = preferences.getString("email","");
+        email = preferences.getString("emailForBD","");
         avatar = (ImageView) rootView.findViewById(R.id.avatar);
         editName = ((EditText) rootView.findViewById(R.id.editName));
 
@@ -79,15 +73,25 @@ public class ProfileFragment extends Fragment {
                 // whenever data at this location is updated
 
                 editName.setText(dataSnapshot.child(email).child("name").getValue(String.class));
-                String imagePath = dataSnapshot.child(email).child("photo").getValue(String.class);
+                String image = preferences.getString(email, "");
+                if (!image.equals("")) {
+                    Uri uri = Uri.parse(preferences.getString(email,""));
+                    Picasso.get().load(uri).transform(new CircleTransform()).into(avatar);
+                }
+                else{
+                    String imagePath = dataSnapshot.child(email).child("photo").getValue(String.class);
+                    StorageReference riversRef = mStorageRef.child(imagePath);
+                    riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Picasso.get().load(uri).transform(new CircleTransform()).into(avatar);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString(email, String.valueOf(uri));
+                            editor.apply();
+                        }
+                    });
+                }
 
-                StorageReference riversRef = mStorageRef.child(imagePath);
-                riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Picasso.get().load(uri).transform(new CircleTransform()).into(avatar);
-                    }
-                });
             }
 
             @Override
@@ -110,7 +114,26 @@ public class ProfileFragment extends Fragment {
 
                     uploadFile(imagePath, selectedImage);
                 }
+
                 Toast.makeText(rootView.getContext(),"Изменения успешно сохранены",Toast.LENGTH_LONG).show();
+            }
+        });
+
+        final Button changePassword = rootView.findViewById(R.id.changePassword);
+        changePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ChangePassword.class);
+                startActivity(intent);
+            }
+        });
+        final Button exit = rootView.findViewById(R.id.exit);
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), SignInActivity.class);
+                intent.putExtra("options",false);
+                startActivity(intent);
             }
         });
 
@@ -141,9 +164,10 @@ public class ProfileFragment extends Fragment {
                 case GALLERY_REQUEST:
                     selectedImage = resultIntent.getData();
                     SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("image", String.valueOf(selectedImage));
+                    editor.putString(email, String.valueOf(selectedImage));
                     editor.apply();
                     Picasso.get().load(selectedImage).transform(new CircleTransform()).into(avatar);
+
 
             }
 

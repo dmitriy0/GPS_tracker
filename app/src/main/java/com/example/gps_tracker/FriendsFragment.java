@@ -78,7 +78,7 @@ public class FriendsFragment extends Fragment {
         });
 
         preferences = getDefaultSharedPreferences(getContext());
-        email = preferences.getString("email","");
+        email = preferences.getString("emailForBD","");
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
@@ -93,7 +93,7 @@ public class FriendsFragment extends Fragment {
 
                     try {
                         count = dataSnapshot.child(email).child("friends").child("count").getValue(Integer.class);
-                        int countRequests = dataSnapshot.child(email).child("requests").child("count").getValue(Integer.class);
+                        int countRequests = dataSnapshot.child(email).child("receiveRequests").child("count").getValue(Integer.class);
                         confirm.setText("Принять запросы ("+countRequests+")");
                         for (int i = 0; i < count; i++) {
 

@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditProfile"></activity>
+        <activity android:name=".ChangePassword"></activity>
+        <activity android:name=".ChangeEmail" />
+        <activity android:name=".EditProfile" />
         <activity
             android:name=".FriendRequest"
             android:screenOrientation="portrait" />

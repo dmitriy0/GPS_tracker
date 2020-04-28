@@ -64,7 +64,7 @@ class DataAdapterRequests extends RecyclerView.Adapter<DataAdapterRequests.ViewH
         holder.emailView.setText(friendsRequestsForRecyclerView.getEmail());
 
         mSettings = getDefaultSharedPreferences(friendsRequestsForRecyclerView.getContext());
-        email = mSettings.getString("email","");
+        email = mSettings.getString("emailForBD","");
 
         counterFor = 1;
 
@@ -90,15 +90,25 @@ class DataAdapterRequests extends RecyclerView.Adapter<DataAdapterRequests.ViewH
                                 myRef.child(email).child("friends").child(String.valueOf(count)).setValue(holder.emailView.getText()+"");
                                 myRef.child(email).child("friends").child("count").setValue(count+1);
 
-                                int countRequests = dataSnapshot.child(email).child("requests").child("count").getValue(Integer.class);
-                                myRef.child(email).child("requests").child(String.valueOf(position)).removeValue();
-                                for (int j = position+1; j < countRequests;j++) {
-                                    String b = dataSnapshot.child(email).child("requests").child(String.valueOf(j)).getValue(String.class);
-                                    myRef.child(email).child("requests").child(String.valueOf(j-1)).setValue(b);
+                                int countReceiveRequests = dataSnapshot.child(email).child("receiveRequests").child("count").getValue(Integer.class);
+                                myRef.child(email).child("receiveRequests").child(String.valueOf(position)).removeValue();
+                                for (int j = position+1; j < countReceiveRequests;j++) {
+                                    String b = dataSnapshot.child(email).child("receiveRequests").child(String.valueOf(j)).getValue(String.class);
+                                    myRef.child(email).child("receiveRequests").child(String.valueOf(j-1)).setValue(b);
 
                                 }
-                                myRef.child(email).child("requests").child(String.valueOf(countRequests-1)).removeValue();
-                                myRef.child(email).child("requests").child("count").setValue(countRequests-1);
+                                myRef.child(email).child("receiveRequests").child(String.valueOf(countReceiveRequests-1)).removeValue();
+                                myRef.child(email).child("receiveRequests").child("count").setValue(countReceiveRequests-1);
+
+                                int countSendRequests = dataSnapshot.child(holder.emailView.getText()+"").child("sendRequests").child("count").getValue(Integer.class);
+                                myRef.child(holder.emailView.getText()+"").child("sendRequests").child(String.valueOf(position)).removeValue();
+                                for (int j = position+1; j < countSendRequests;j++) {
+                                    String b = dataSnapshot.child(holder.emailView.getText()+"").child("sendRequests").child(String.valueOf(j)).getValue(String.class);
+                                    myRef.child(holder.emailView.getText()+"").child("sendRequests").child(String.valueOf(j-1)).setValue(b);
+
+                                }
+                                myRef.child(holder.emailView.getText()+"").child("sendRequests").child(String.valueOf(countSendRequests-1)).removeValue();
+                                myRef.child(holder.emailView.getText()+"").child("sendRequests").child("count").setValue(countSendRequests-1);
 
                             } catch (Exception e) {
 

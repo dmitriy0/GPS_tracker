@@ -8,13 +8,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +38,8 @@ public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     DatabaseReference myRef;
 
+    boolean isEmailExist;
+
     private SharedPreferences mSettings;
 
     @Override
@@ -53,6 +58,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+                intent.putExtra("options",false);
                 startActivity(intent);
             }
         });
@@ -85,28 +91,36 @@ public class SignUpActivity extends AppCompatActivity {
     private void addUser(){
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+        isEmailExist = false;
+
         Task<AuthResult> authResultTask = mAuth.createUserWithEmailAndPassword(mLogin, mPassword).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(SignUpActivity.this, "Регистрация успешна", Toast.LENGTH_LONG).show();
-
+                    isEmailExist = true;
                     myRef.child(mLogin.replace(".","").toLowerCase()).child("name").setValue(mNickname);
-                    myRef.child(mLogin.replace(".","").toLowerCase()).child("currentLocation").setValue("loc");
-                    myRef.child(mLogin.replace(".","").toLowerCase()).child("requests").child("count").setValue(0);
+                    myRef.child(mLogin.replace(".","").toLowerCase()).child("currentLocation").child("longitude").setValue(null);
+                    myRef.child(mLogin.replace(".","").toLowerCase()).child("currentLocation").child("latitude").setValue(null);
+                    myRef.child(mLogin.replace(".","").toLowerCase()).child("sendRequests").child("count").setValue(0);
+                    myRef.child(mLogin.replace(".","").toLowerCase()).child("receiveRequests").child("count").setValue(0);
                     myRef.child(mLogin.replace(".","").toLowerCase()).child("friends").child("count").setValue(0);
                     String defaultImage = "gs://gps-tracker-275108.appspot.com"+"default";
                     myRef.child(mLogin.replace(".","").toLowerCase()).child("photo").setValue(defaultImage);
 
 
                     SharedPreferences.Editor editor = mSettings.edit();
-                    editor.putString("email",mLogin.replace(".","").toLowerCase());
+                    editor.putString("emailForBD",mLogin.replace(".","").toLowerCase());
+                    editor.putString("realEmail",mLogin);
                     editor.apply();
 
                     Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
                     startActivity(intent);
-                } else {
-                    Toast.makeText(SignUpActivity.this, "Регистрация провалена", Toast.LENGTH_LONG).show();
+
+                }
+
+
+                 else {
+                    Toast.makeText(SignUpActivity.this, "регистрация провалена", Toast.LENGTH_LONG).show();
                 }
             }
         });
