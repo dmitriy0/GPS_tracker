@@ -72,7 +72,7 @@ class DataAdapterRequests extends RecyclerView.Adapter<DataAdapterRequests.ViewH
         holder.confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(friendsRequestsForRecyclerView.getContext(),"fghghg",Toast.LENGTH_LONG).show();
+
                 myRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -109,6 +109,8 @@ class DataAdapterRequests extends RecyclerView.Adapter<DataAdapterRequests.ViewH
                                 }
                                 myRef.child(holder.emailView.getText()+"").child("sendRequests").child(String.valueOf(countSendRequests-1)).removeValue();
                                 myRef.child(holder.emailView.getText()+"").child("sendRequests").child("count").setValue(countSendRequests-1);
+
+                                Toast.makeText(friendsRequestsForRecyclerView.getContext(),"пользователь добавлен в ваш список друзей",Toast.LENGTH_LONG).show();
 
                             } catch (Exception e) {
 

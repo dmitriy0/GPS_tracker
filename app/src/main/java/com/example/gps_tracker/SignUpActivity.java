@@ -103,6 +103,7 @@ public class SignUpActivity extends AppCompatActivity {
                     mAuth = FirebaseAuth.getInstance();
                     mUser = mAuth.getCurrentUser();
 
+                    //отправка проверочного письма
                     mUser.sendEmailVerification()
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override

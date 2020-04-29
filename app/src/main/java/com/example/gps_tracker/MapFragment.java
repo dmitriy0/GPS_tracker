@@ -78,6 +78,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
     @Override
     public void onMapReady(final GoogleMap googleMap) {
 
+
+
         Intent intent = requireActivity().getIntent();
         friendLat = (Objects.requireNonNull(intent.getDoubleExtra("lat",0.0)));
         friendLng = (Objects.requireNonNull(intent.getDoubleExtra("lng",0.0)));
@@ -128,6 +130,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    //очищаем карту и отрисовываем маркеры друзей
+                    googleMap.clear();
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
                     try{

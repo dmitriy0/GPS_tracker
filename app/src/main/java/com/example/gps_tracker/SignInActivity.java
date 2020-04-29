@@ -102,6 +102,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
+                    //проверяем подтвержден ли email
                     if(Objects.requireNonNull(mAuth.getCurrentUser()).isEmailVerified()){
                         Toast.makeText(SignInActivity.this, "Авторизация успешна", Toast.LENGTH_LONG).show();
 

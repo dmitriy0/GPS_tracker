@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Users");
 
+        //смотрим первый ли раз мы зашли в приложение, если первый то добавляем информацию в бд
+
         SharedPreferences mSettings = getDefaultSharedPreferences(this);
         boolean first = mSettings.getBoolean("first",false);
         String mLogin = mSettings.getString("emailForBD","");

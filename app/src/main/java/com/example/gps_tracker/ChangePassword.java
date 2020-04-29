@@ -68,7 +68,7 @@ public class ChangePassword extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Toast.makeText(getApplicationContext(),"пароль успешно изменен",Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getBaseContext(),"пароль успешно изменен",Toast.LENGTH_LONG).show();
                                                     Intent mStartActivity = new Intent(getApplicationContext(), SignInActivity.class);
                                                     int mPendingIntentId = 123456;
                                                     PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
