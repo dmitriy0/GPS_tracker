@@ -8,6 +8,13 @@
     android:gravity="center"
     tools:context=".SignUpActivity">
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:text="После регистрации на ваш email будет отправлено письмо для подтверждения регистрации" />
+
     <EditText
         android:id="@+id/login"
         android:layout_width="270dp"
@@ -97,4 +104,6 @@
             android:text="Войти!"
             android:textColor="#0D58A6" />
     </LinearLayout>
+
+
 </LinearLayout>

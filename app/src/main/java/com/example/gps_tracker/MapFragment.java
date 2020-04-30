@@ -89,7 +89,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
             googleMap.setOnMyLocationButtonClickListener(this);
             googleMap.setMyLocationEnabled(true);
 
-            FusedLocationProviderClient userLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+            /*FusedLocationProviderClient userLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
             userLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
@@ -113,6 +113,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
 
                 }
             });
+            
+             */
             //анимация камеры к местоположению друга
             if (friendLat != 0.0 && friendLng != 0.0){
                 LatLng friendLocation = new LatLng(friendLat,friendLng);
@@ -130,7 +132,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                     //очищаем карту и отрисовываем маркеры друзей
                     googleMap.clear();
                     // This method is called once with the initial value and again

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -38,6 +39,8 @@ public class SignUpActivity extends AppCompatActivity {
     FirebaseUser mUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     DatabaseReference myRef;
+
+    ProgressDialog progressDialog;
 
     boolean isEmailExist;
 
@@ -76,6 +79,9 @@ public class SignUpActivity extends AppCompatActivity {
                 }
                 else {
                     if (mPassword.equals(mRepeatPassword)){
+                        progressDialog = new ProgressDialog(SignUpActivity.this);
+                        progressDialog.setTitle("Подождите");
+                        progressDialog.show();
                         addUser();
                     }
                     else{
@@ -98,6 +104,7 @@ public class SignUpActivity extends AppCompatActivity {
         Task<AuthResult> authResultTask = mAuth.createUserWithEmailAndPassword(mLogin, mPassword).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+
                 if (task.isSuccessful()) {
 
                     mAuth = FirebaseAuth.getInstance();
@@ -116,14 +123,19 @@ public class SignUpActivity extends AppCompatActivity {
                                         editor.putBoolean("first",true);
                                         editor.putString("nick",mNickname);
                                         editor.apply();
+
                                         // after email is sent just logout the user and finish this activity
                                         mAuth.signOut();
+                                        progressDialog.dismiss();
                                         finish();
+
                                     }
                                     else
                                     {
-                                        // email not sent, so display message and restart the activity or do whatever you wish to do
+                                        Toast.makeText(getBaseContext(),"ошибка",Toast.LENGTH_LONG).show();
 
+                                        // email not sent, so display message and restart the activity or do whatever you wish to do
+                                        progressDialog.dismiss();
                                         //restart this activity
 
 
@@ -135,8 +147,10 @@ public class SignUpActivity extends AppCompatActivity {
 
 
                  else {
+                    progressDialog.dismiss();
                     Toast.makeText(SignUpActivity.this, "регистрация провалена", Toast.LENGTH_LONG).show();
                 }
+
             }
         });
 
