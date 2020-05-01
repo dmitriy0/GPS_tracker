@@ -70,6 +70,7 @@ public class FriendsFragment extends Fragment {
 
         //кнопка перехода в активити принятия запроса дружбы
         final Button confirm = (Button) rootView.findViewById(R.id.confirm);
+        confirm.setEnabled(false);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,6 +100,11 @@ public class FriendsFragment extends Fragment {
                         count = dataSnapshot.child(email).child("friends").child("count").getValue(Integer.class);
                         int countRequests = dataSnapshot.child(email).child("receiveRequests").child("count").getValue(Integer.class);
                         confirm.setText("Принять запросы ("+countRequests+")");
+
+                        //если заявок нет то кнопку нельзя нажать
+                        if (countRequests != 0){
+                            confirm.setEnabled(true);
+                        }
                         for (int i = 0; i < count; i++) {
 
                             friendEmail = dataSnapshot.child(email).child("friends").child(String.valueOf(i)).getValue(String.class);

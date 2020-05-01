@@ -51,8 +51,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
     private Double friendLat;
     private Double friendLng;
 
-    Location myLocation;
-    private FusedLocationProviderClient fusedLocationClient;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -113,7 +111,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMyLocationButto
 
                 }
             });
-            
+
              */
             //анимация камеры к местоположению друга
             if (friendLat != 0.0 && friendLng != 0.0){

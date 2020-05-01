@@ -38,7 +38,6 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class MainActivity extends AppCompatActivity {
 
-    private LocationManager locationManager;
     public static boolean enabled = false;
     int REQUEST_PERMISSION_ACCESS_FINE_LOCATION = 1;
     DatabaseReference myRef;
@@ -63,9 +62,7 @@ public class MainActivity extends AppCompatActivity {
         myRef = database.getReference("Users");
 
 
-        //смотрим первый ли раз мы зашли в приложение, если первый то добавляем информацию в бд
-
-
+        //смотрим первый ли раз мы зашли в приложение, если первый то добавляем информацию о новом пользователе в бд
         if (first){
             myRef.child(mLogin.replace(".","").toLowerCase()).child("name").setValue(mSettings.getString("nick",""));
             myRef.child(mLogin.replace(".","").toLowerCase()).child("currentLocation").child("longitude").setValue(null);
@@ -104,8 +101,10 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
         }
 
+        //проверка включено ли местоположение
         checkLocationServiceEnabled();
 
+        //запуск слушателя локации
         permissionStatus = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
             LocationManager locationManager = (LocationManager)
@@ -245,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
         }
     }
-    // метод который при изменении локации записывает координаты в БД
+    // этот класс проверяет не изменилась ли геопозиция, если изменилась, то идет запись данных в бд
     private class MyLocationListener implements LocationListener {
         SharedPreferences mSettings = getDefaultSharedPreferences(MainActivity.this);
         final String mLogin = mSettings.getString("emailForBD","");

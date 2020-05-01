@@ -42,8 +42,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog;
 
-    boolean isEmailExist;
-
     private SharedPreferences mSettings;
 
     @Override
@@ -97,9 +95,6 @@ public class SignUpActivity extends AppCompatActivity {
     private void addUser(){
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
-        isEmailExist = false;
-
-
 
         Task<AuthResult> authResultTask = mAuth.createUserWithEmailAndPassword(mLogin, mPassword).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -138,11 +133,9 @@ public class SignUpActivity extends AppCompatActivity {
                                         progressDialog.dismiss();
                                         //restart this activity
 
-
                                     }
                                 }
                             });
-
                 }
 
 

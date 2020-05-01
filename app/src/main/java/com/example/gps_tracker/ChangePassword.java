@@ -47,18 +47,21 @@ public class ChangePassword extends AppCompatActivity {
         // email and password credentials but there are multiple possible providers,
         // such as GoogleAuthProvider or FacebookAuthProvider.
 
+        //кнопка изменить пароль
         Button saveChanges = (Button) findViewById(R.id.save);
         saveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 currentPassword = ((EditText) findViewById(R.id.currentPassword)).getText().toString();
                 newPassword = ((EditText) findViewById(R.id.newPassword)).getText().toString();
                 repeatPassword = ((EditText) findViewById(R.id.repeatPassword)).getText().toString();
                 if (newPassword.equals(repeatPassword)) {
+
                     AuthCredential credential = EmailAuthProvider
                             .getCredential(email, currentPassword);
 
-                    // Prompt the user to re-provide their sign-in credentials
+                    // Повторный вход пользователя
                     user.reauthenticate(credential)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -68,14 +71,19 @@ public class ChangePassword extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
+
                                                     Toast.makeText(getBaseContext(),"пароль успешно изменен",Toast.LENGTH_LONG).show();
-                                                    Intent mStartActivity = new Intent(getApplicationContext(), SignInActivity.class);
-                                                    int mPendingIntentId = 123456;
+                                                    Intent mStartActivity = new Intent(ChangePassword.this, SignInActivity.class);
+                                                    startActivity(mStartActivity);
+
+                                                    /*int mPendingIntentId = 123456;
                                                     PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
                                                     AlarmManager mgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
                                                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                                                    System.exit(0);
+                                                    System.exit(0);*/
+
                                                 } else {
+
                                                     Toast.makeText(getApplicationContext(),"ошибка",Toast.LENGTH_LONG).show();
                                                 }
                                             }
@@ -85,6 +93,7 @@ public class ChangePassword extends AppCompatActivity {
                             });
                 }
                 else{
+
                     Toast.makeText(getApplicationContext(),"пароли не совпадают",Toast.LENGTH_LONG).show();
                 }
             }
